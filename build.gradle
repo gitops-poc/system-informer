@@ -1,0 +1,89 @@
+buildscript {
+    ext {
+        springBootVersion = '2.4.5'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id "com.github.spotbugs" version "4.7.0"
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'pmd'
+
+pmd {
+    ignoreFailures = true
+}
+
+spotbugs {
+    showStackTraces = false
+    showProgress = true
+    ignoreFailures = true
+    spotbugsMain.reports {
+        html {
+            enabled = true
+            destination = file("$buildDir/reports/spotbugs/main.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+
+ext {
+    acrgroup = 'defaultacr.azurecr.io'
+}
+
+group = 'systeminformer'
+sourceCompatibility = '1.11'
+
+bootJar {
+    mainClassName = 'systeminformer.SystemInformerApplication'
+    baseName = 'systeminformer'
+    version =  '0.0.1'
+}
+
+wrapper {
+    gradleVersion = "6.8.1"
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Enforce log4j version without vulnerability
+ext['log4j2.version'] = '2.17.0'
+ext['logback.version'] = '1.2.9'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'junit:junit:4.13'
+
+    //Prometheus monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        showExceptions true
+        exceptionFormat "full"
+        showCauses true
+        showStackTraces true
+        showStandardStreams = false
+    }
+}
+
+task unpack(type: Copy) {
+    dependsOn bootJar
+    from(zipTree(tasks.bootJar.outputs.files.singleFile))
+    into("build/dependency")
+}
