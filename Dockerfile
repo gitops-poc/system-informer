@@ -1,10 +1,13 @@
-FROM azul/zulu-openjdk-alpine:11
-RUN addgroup -g 12001 -S appuser && adduser -u 12000 -S appuser -G appuser
-ARG DEPENDENCY=build/dependency
-COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY ${DEPENDENCY}/META-INF /app/META-INF
-COPY ${DEPENDENCY}/BOOT-INF/classes /app
-RUN chown -R appuser:appuser /app
+FROM openjdk:11-jdk-slim-bullseye AS build
+COPY . /app
+WORKDIR /app
+RUN ./gradlew test
+RUN ./gradlew unpack
+
+FROM gcr.io/distroless/java11-debian11:nonroot
+ARG DEPENDENCY=/app/build/dependency
+COPY --from=build --chown=nonroot:nonroot ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY --from=build --chown=nonroot:nonroot ${DEPENDENCY}/META-INF /app/META-INF
+COPY --from=build --chown=nonroot:nonroot ${DEPENDENCY}/BOOT-INF/classes /app
 EXPOSE 8080
-USER appuser
-ENTRYPOINT exec java $JAVA_OPTS -cp app:app/lib/* systeminformer.SystemInformerApplication
+ENTRYPOINT ["java","-cp","/app:/app/lib/*","systeminformer.SystemInformerApplication"]

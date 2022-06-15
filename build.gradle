@@ -11,7 +11,8 @@ buildscript {
 }
 
 plugins {
-    id "com.github.spotbugs" version "4.7.0"
+  id "com.github.spotbugs" version "4.7.0"
+  id "org.barfuin.gradle.taskinfo" version "1.4.0"
 }
 
 apply plugin: 'java'
@@ -42,6 +43,10 @@ ext {
 
 group = 'systeminformer'
 sourceCompatibility = '1.11'
+
+project.gradle.taskGraph.whenReady {
+    println project.gradle.taskGraph.getAllTasks()
+}
 
 bootJar {
     mainClassName = 'systeminformer.SystemInformerApplication'
