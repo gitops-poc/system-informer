@@ -1,8 +1,7 @@
 FROM openjdk:11-jdk-slim-bullseye AS build
 COPY . /app
 WORKDIR /app
-RUN ./gradlew test
-RUN ./gradlew unpack
+RUN ./gradlew test && ./gradlew unpack
 
 FROM gcr.io/distroless/java11-debian11:nonroot
 ARG DEPENDENCY=/app/build/dependency
