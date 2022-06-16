@@ -1,7 +1,9 @@
 FROM openjdk:11-jdk-slim-bullseye AS build
 COPY . /app
 WORKDIR /app
-RUN ./gradlew test && ./gradlew unpack
+RUN ./gradlew test
+# hadolint ignore=DL3059
+RUN ./gradlew unpack
 
 FROM gcr.io/distroless/java11-debian11:nonroot
 ARG DEPENDENCY=/app/build/dependency
