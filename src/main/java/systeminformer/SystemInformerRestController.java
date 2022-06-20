@@ -28,7 +28,7 @@ public class SystemInformerRestController {
     }
 
     @RequestMapping("/sql")
-    public void getSql(@RequestParam(value = "text") String text) throws Exception {
+    public String getSql(@RequestParam(value = "text") String text) throws Exception {
       String sql = "select "
         + "customer_id,acc_number,branch_id,balance "
         + "from Accounts where customer_id = '"
@@ -36,6 +36,7 @@ public class SystemInformerRestController {
         + "'";
       Connection c = this.dataSource.getConnection();
       ResultSet rs = c.createStatement().executeQuery(sql);
+      return rs.getString(0);
     // ...
     }
 }
