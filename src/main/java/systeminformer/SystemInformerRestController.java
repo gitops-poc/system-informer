@@ -6,16 +6,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.InetAddress;
 
 @RestController
+public final class SystemInformerRestController {
 
-public class SystemInformerRestController {
-    private final String DATE_FORMAT = "yyyy/MM/dd HH:mm";
-
-    @RequestMapping("/info")
-    public InformationDto getInfo() throws Exception {
-        InformationDto dto = new InformationDto();
-        dto.setHostname(InetAddress.getLocalHost().getHostName());
-        dto.setIpAddress(InetAddress.getLocalHost().getHostAddress());
-        int intentionalPmdViolation = 9;
-        return dto;
-    }
+  @RequestMapping("/info")
+  public InformationDto getInfo() throws Exception {
+    InformationDto dto = new InformationDto();
+    dto.setHostname(InetAddress.getLocalHost().getHostName());
+    dto.setIpAddress(InetAddress.getLocalHost().getHostAddress());
+    return dto;
+  }
 }
