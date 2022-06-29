@@ -1,3 +1,4 @@
+---
 # Configuration file for MegaLinter
 # See all available variables at https://megalinter.github.io/configuration/ and in linters documentation
 
@@ -15,4 +16,4 @@ FILEIO_REPORTER: false
 # DISABLE_ERRORS: true # Uncomment if you want MegaLinter to detect errors but not block CI to pass
 PRINT_ALPACA: false
 VALIDATE_ALL_CODEBASE: true # Set ${{ github.event_name == &#39;push&#39; &amp;&amp; github.ref == &#39;refs/heads/main&#39; }} to validate only diff with main branch
-YAML_PRETTIER_FILTER_REGEX_EXCLUDE: '(workflows/)'
+YAML_PRETTIER_FILTER_REGEX_EXCLUDE: "(workflows/)"
