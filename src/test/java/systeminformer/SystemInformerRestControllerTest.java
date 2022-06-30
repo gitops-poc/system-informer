@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 public class SystemInformerRestControllerTest {
 
   private MockMvc mockMvc;
-  private static final int HTTP_STATUS = 200;
+  private static final int HTTP_STATUS = 400;
 
   @Before
   public void setUp() {
