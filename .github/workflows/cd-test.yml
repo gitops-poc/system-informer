@@ -25,7 +25,7 @@ jobs:
         run: |
           mkdir $HOME/.ssh/
           ls -la $HOME
-          'echo "$SSH_KEY" > $HOME/.ssh/id_rsa'
+          echo "$SSH_KEY" > $HOME/.ssh/id_rsa
           chmod 600 $HOME/.ssh/id_rsa
           git clone git@github.com:gitops-poc/argo.git
           cd argo
