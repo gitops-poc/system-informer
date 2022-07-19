@@ -24,8 +24,9 @@ jobs:
       - name: Clone repo
         run: |
           ls -la $HOME
-          ls -la $HOME/.ssh/
+          mkdir $HOME/.ssh/
           'echo "$SSH_KEY" > $HOME/.ssh/id_rsa'
+          chmod 600 $HOME/.ssh/id_rsa
           git clone git@github.com:gitops-poc/argo.git
           cd argo
           touch testfile
