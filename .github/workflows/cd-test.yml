@@ -17,34 +17,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Git Checkout
-      - name: Check out argo repo
-        uses: actions/checkout@v3
-        with:
-          repository: gitops-poc/argo
-      - name: Update dev image
-        uses: mikefarah/yq@master
-        with:
-          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:test"' system-informer/overlays/dev/deployment.yaml
-      - name: Output result
+      # - name: Check out argo repo
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: gitops-poc/argo
+      - name: Clone repo
         run: |
-          cat system-informer/overlays/dev/deployment.yaml
-      - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
-        with:
-          # The arguments for the `git add` command (see the paragraph below for more info)
-          # Default: '.'
-          add: 'system-informer'
-          # The name of the user that will be displayed as the author of the commit.
-          # Default: depends on the default_author input
-          author_name: CI bot
-          # The email of the user that will be displayed as the author of the commit.
-          # Default: depends on the default_author input
-          author_email: mail@example.com
-          # Additional arguments for the git commit command. The --message argument is already set by the message input.
-          # Default: ''
-          commit: --signoff
-          # The message for the commit.
-          # Default: 'Commit from GitHub Actions (name of the workflow)'
-          message: 'ci: update dev image'
-          # Whether to push the commit and, if any, its tags to the repo. It can also be used to set the git push arguments (see the paragraph below for more info)
-          # Default: true
-          push: true
+          'echo "$SSH_KEY" > ~/.ssh/id_rsa'
+          git clone git@github.com:gitops-poc/argo.git
+          cd argo
+          touch testfile
+          git add testfile
+          git commit "testfile"
+          git push
+        shell: bash
+        env:
+          SSH_KEY: ${{secrets.ARGO_SSH_KEY}}
+          
+      # - name: Update dev image
+      #   uses: mikefarah/yq@master
+      #   with:
+      #     cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:test"' system-informer/overlays/dev/deployment.yaml
+      # - name: Output result
+      #   run: |
+      #     cat system-informer/overlays/dev/deployment.yaml
