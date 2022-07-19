@@ -27,5 +27,4 @@ jobs:
       - name: Test yq
         uses: mikefarah/yq@master
         with:
-          cmd: yq e '.spec.replicas' deployment.yaml
-          path: sytem-informer/base
+          cmd: yq e '.spec.replicas' system-informer/base/deployment.yaml
