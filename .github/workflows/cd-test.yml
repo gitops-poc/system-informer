@@ -34,7 +34,7 @@ jobs:
           ls -la
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git commit "testfile"
+          git commit -m "testfile"
           git push
         shell: bash
         env:
