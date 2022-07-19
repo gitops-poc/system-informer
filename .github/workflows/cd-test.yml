@@ -32,9 +32,9 @@ jobs:
           touch testfile
           git add testfile
           ls -la
-          git commit "testfile"
           git config user.name github-actions
           git config user.email github-actions@github.com
+          git commit "testfile"
           git push
         shell: bash
         env:
