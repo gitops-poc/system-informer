@@ -1,7 +1,7 @@
 ---
 name: CD test
 
-on: 
+on:
   workflow_dispatch:
   pull_request:
     types:
@@ -12,13 +12,10 @@ on:
       - master
 
 jobs:
-
   deploy-dev:
-
     name: Deploy in the dev environment
     runs-on: ubuntu-latest
     steps:
-
       # Git Checkout
       - name: Check out argo repo
         uses: actions/checkout@v3
@@ -28,6 +25,9 @@ jobs:
         uses: mikefarah/yq@master
         with:
           cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:test"' system-informer/overlays/dev/deployment.yaml
+      - name: Test yq
+        run: |
+          cat system-informer/overlays/dev/deployment.yaml
       - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
         with:
           # The arguments for the `git add` command (see the paragraph below for more info)
