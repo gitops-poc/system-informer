@@ -15,35 +15,54 @@ jobs:
   deploy-dev:
     name: Deploy in the dev environment
     runs-on: ubuntu-latest
+    env:
+      ARGO_DIR: argo
     steps:
       # Git Checkout
       # - name: Check out argo repo
       #   uses: actions/checkout@v3
       #   with:
       #     repository: gitops-poc/argo
-      - name: Clone repo
+      - name: Add argo repo ssh key
         run: |
           mkdir $HOME/.ssh/
           ls -la $HOME
           echo "$SSH_KEY" > $HOME/.ssh/id_rsa
           chmod 600 $HOME/.ssh/id_rsa
-          git clone git@github.com:gitops-poc/argo.git
-          cd argo
-          touch testfile
-          git add testfile
-          ls -la
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git commit -m "testfile"
-          git push
+          # cd argo
+          # touch testfile
+          # git add testfile
+          # ls -la
+          # git config user.name github-actions
+          # git config user.email github-actions@github.com
+          # git commit -m "testfile"
+          # git push
         shell: bash
         env:
           SSH_KEY: ${{secrets.ARGO_SSH_KEY}}
-          
+      - name: Clone argo repo
+        run: |
+          git clone git@github.com:gitops-poc/argo.git $ARGO_DIR
+      - name: Test working directory
+        working-directory: ${{ env.ARGO_DIR }}
+        run: |
+          ls -la system-informer
+
+
       # - name: Update dev image
       #   uses: mikefarah/yq@master
       #   with:
       #     cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:test"' system-informer/overlays/dev/deployment.yaml
-      # - name: Output result
+      # - name: Output yaml to be applied
       #   run: |
-      #     cat system-informer/overlays/dev/deployment.yaml
+      #     kustomize build system-informer/overlays/dev
+      # - name: Output yaml to be applied
+      #   run: |
+      #     kustomize build system-informer/overlays/dev
+      # - name: Output yaml to be applied
+      #   run: |
+      #     kustomize build system-informer/overlays/dev
+      #     git config user.name github-actions
+      #     git config user.email github-actions@github.com
+      #     git commit -m "testfile"
+      #     git push
