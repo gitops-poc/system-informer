@@ -124,6 +124,9 @@ jobs:
           cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:test"' $ARGO_DIR/system-informer/overlays/test/deployment.yaml
       - name: Output yaml to be applied
         working-directory: ${{ env.ARGO_DIR }}
+        env:
+          ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
+          ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
           kustomize build system-informer/overlays/test
       # - name: Commit and push changes
