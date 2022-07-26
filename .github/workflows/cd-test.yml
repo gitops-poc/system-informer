@@ -72,7 +72,7 @@ jobs:
           ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
-          argocd app wait systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --sync --grpc-web --async
+          argocd app wait systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --sync --grpc-web
       - name: Check current revision
         working-directory: ${{ env.ARGO_DIR }}
         env:
