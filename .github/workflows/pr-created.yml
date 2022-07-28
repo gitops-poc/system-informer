@@ -15,7 +15,7 @@ jobs:
 
   codeql:
 
-    uses: gitops-poc/workflows/code-analysis.yml@master
+    uses: gitops-poc/workflows/.github/workflows/code-analysis.yml@master
 
   mega-linter:
 
