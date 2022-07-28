@@ -45,7 +45,7 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          if [[ ! git diff-index --quiet HEAD ]]; then
+          if ! git diff-index --quiet HEAD; then
             git add .
             git commit -m "ci: update dev image"
             git push
