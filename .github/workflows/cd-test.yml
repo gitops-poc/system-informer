@@ -45,16 +45,18 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add .
-          git commit -m "ci: update dev image"
-          git push
+          if ! git diff-index --quiet HEAD; then
+            git add .
+            git commit -m "ci: update dev image"
+            git push
+          fi
           echo "::set-output name=sandbox-commit::$(git rev-parse HEAD)"
       - name: Echo previous step output
         run: |
           echo ${{steps.commit_push_sandbox.outputs.sandbox-commit}}
       - name: Install argocd cli
         run: |
-          VERSION=v2.4.7 # Select desired TAG from https://github.com/argoproj/argo-cd/releases
+          VERSION=v2.4.7
           curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64
           chmod +x /usr/local/bin/argocd
       - name: Sync argocd app
@@ -144,7 +146,7 @@ jobs:
       #     echo ${{steps.commit_push_sandbox.outputs.sandbox-commit}}
       # - name: Install argocd cli
       #   run: |
-      #     VERSION=v2.4.7 # Select desired TAG from https://github.com/argoproj/argo-cd/releases
+      #     VERSION=v2.4.7
       #     curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64
       #     chmod +x /usr/local/bin/argocd
       # - name: Sync argocd app
