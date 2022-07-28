@@ -50,7 +50,7 @@ jobs:
           ls -la
           git diff
           git remote -vv
-          ! git diff-index --quiet HEAD --
+          git diff-index --quiet HEAD --
           if ! git diff-index --quiet HEAD --; then
             git remote -vv
             echo "inside if"
