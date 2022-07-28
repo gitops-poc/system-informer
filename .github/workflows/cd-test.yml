@@ -49,8 +49,8 @@ jobs:
           pwd
           ls -la
           git diff
-          ! git diff-index --quiet HEAD
-          if ! git diff-index --quiet HEAD; then
+          ! git diff-index --quiet HEAD --
+          if ! git diff-index --quiet HEAD --; then
             echo "inside if"
             git diff
             git add .
