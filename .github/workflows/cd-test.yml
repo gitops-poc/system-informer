@@ -49,8 +49,10 @@ jobs:
           pwd
           ls -la
           git diff
+          git remote -vv
           ! git diff-index --quiet HEAD --
           if ! git diff-index --quiet HEAD --; then
+            git remote -vv
             echo "inside if"
             git diff
             git add .
