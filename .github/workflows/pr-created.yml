@@ -30,6 +30,7 @@ jobs:
     permissions:
       checks: write
       pull-requests: write
+      packages: write
 
     steps:
 
