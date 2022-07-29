@@ -72,6 +72,7 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
 
       - name: Scan for CVEs with Trivy
         uses: aquasecurity/trivy-action@master
