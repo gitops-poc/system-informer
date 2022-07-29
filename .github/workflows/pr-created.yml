@@ -10,6 +10,7 @@ on: # yamllint disable-line rule:truthy
       - reopened
     branches:
       - master
+  push:
 
 jobs:
 
