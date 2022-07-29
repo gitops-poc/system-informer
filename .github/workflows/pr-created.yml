@@ -75,11 +75,16 @@ jobs:
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
 
-      - name: Scan for CVEs with Trivy
+      - name: Scan for all CVEs with Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ steps.metadata.outputs.tags }}
-          format: github
+          exit-code: 0
+
+      - name: Scan for fixable CVEs with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ steps.metadata.outputs.tags }}
           exit-code: 1
           ignore-unfixed: true
           severity: HIGH,CRITICAL
