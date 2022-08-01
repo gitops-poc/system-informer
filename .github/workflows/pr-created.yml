@@ -79,8 +79,8 @@ jobs:
       - name: Install Trivy
         run: |
           VERSION=0.30.4
-          curl -sSL -o /usr/local/bin/argocd https://github.com/aquasecurity/trivy/releases/download/v$VERSION/trivy_$VERSION_Linux-64bit.tar.gz
-          tar -xvf trivy_$VERSION_Linux-64bit.tar.gz
+          curl -sSL -o /usr/local/bin/argocd https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz
+          tar -xvf trivy_${VERSION}_Linux-64bit.tar.gz
 
       - name: Generate Trivy sarif report for fixable CVEs
         run: |
