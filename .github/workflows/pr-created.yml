@@ -83,6 +83,8 @@ jobs:
           exit-code: 0
           format: 'sarif'
           output: 'trivy-results.sarif'
+          ignore-unfixed: true
+          severity: HIGH,CRITICAL
 
       - name: Upload Trivy sarif report
         if: success() || failure()
