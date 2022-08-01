@@ -76,14 +76,15 @@ jobs:
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
 
-      - name: Generate Trivy sarif report
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ steps.metadata.outputs.tags }}
-          exit-code: 0
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          ignore-unfixed: false
+      - name: Install Trivy
+        run: |
+          VERSION=0.30.4
+          curl -sSL -o /usr/local/bin/argocd https://github.com/aquasecurity/trivy/releases/download/v$VERSION/trivy_$VERSION_Linux-64bit.tar.gz
+          tar -xvf trivy_$VERSION_Linux-64bit.tar.gz
+
+      - name: Generate Trivy sarif report for fixable CVEs
+        run: |
+          trivy --format sarif --exit-code 0 --ignore-unfixed --vuln-type os,library --severity HIGH,CRITICAL --output trivy-results.sarif ${{ steps.metadata.outputs.tags }}
 
       - name: Upload Trivy sarif report
         if: success() || failure()
@@ -91,10 +92,8 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-      - name: Scan for fixable CVEs with Trivy
+      - name: Full scan with Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ steps.metadata.outputs.tags }}
-          exit-code: 1
-          ignore-unfixed: true
-          severity: HIGH,CRITICAL
+          exit-code: 0
