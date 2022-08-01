@@ -86,7 +86,7 @@ jobs:
 
       - name: Generate Trivy sarif report for fixable CVEs
         run: |
-          trivy --format sarif --exit-code 0 --ignore-unfixed --vuln-type os,library --severity HIGH,CRITICAL --output trivy-results.sarif ${{ steps.metadata.outputs.tags }}
+          trivy --format sarif --ignore-unfixed --vuln-type os,library --severity HIGH,CRITICAL --output trivy-results.sarif ${{ steps.metadata.outputs.tags }}
 
       - name: Upload Trivy sarif report
         if: success() || failure()
