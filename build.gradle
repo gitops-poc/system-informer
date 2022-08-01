@@ -49,7 +49,7 @@ project.gradle.taskGraph.whenReady {
 }
 
 bootJar {
-    mainClassName = 'systeminformer.SystemInformerApplication'
+    mainClass = 'systeminformer.SystemInformerApplication'
     baseName = 'systeminformer'
     version =  '0.0.1'
 }
