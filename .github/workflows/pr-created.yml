@@ -79,8 +79,8 @@ jobs:
       - name: Install Trivy
         run: |
           VERSION=0.30.4
-          curl -sSL -o . https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz
-          tar -xvf trivy_${VERSION}_Linux-64bit.tar.gz
+          curl -sSL -o ./trivy.tar.gz https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz
+          tar -xvf trivy.tar.gz
           ls -la
           mv trivy /usr/local/bin/trivy
 
