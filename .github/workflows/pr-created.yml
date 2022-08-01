@@ -42,59 +42,16 @@ jobs:
       - name: Gradle Unit Tests
         run: ./gradlew test
 
-      # PPublishes the test results
+      # Publishes the test results
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         # Runs even if the tests fail
-        if: always()
+        if: success() || failure()
         with:
           files: "**/TEST-*.xml"
 
-      - name: Setup Docker BuildX
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to GitHub CR
-        uses: docker/login-action@v2
+      - uses: gitops-poc/workflows/.github/workflows/build-push-scan.yml@master
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract Docker metadata
-        id: metadata
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
+          image_tags: |
             type=raw,value=PR-{{date 'YYYYMMDD'}}-{{sha}}
 
-      - name: Build & Push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-
-      - name: Generate Trivy sarif report
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ steps.metadata.outputs.tags }}
-          exit-code: 0
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          ignore-unfixed: true
-
-      - name: Upload Trivy sarif report
-        if: success() || failure()
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-      - name: Scan for fixable CVEs with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ steps.metadata.outputs.tags }}
-          exit-code: 1
-          ignore-unfixed: true
-          severity: HIGH,CRITICAL
