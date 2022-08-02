@@ -49,7 +49,6 @@ jobs:
 
   build-scan-push:
 
-    name: Build, scan & push Dockerfile
     needs: test
     permissions:
       checks: write
@@ -61,4 +60,3 @@ jobs:
     with:
       image_tags: |
         type=raw,value=PR-{{date 'YYYYMMDD'}}-{{sha}}
-
