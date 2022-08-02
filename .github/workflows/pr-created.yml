@@ -29,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       checks: write
+      pull-requests: write
 
     steps:
 
