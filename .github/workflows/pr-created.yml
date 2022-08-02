@@ -23,15 +23,12 @@ jobs:
     with:
       apply_fixes: "all"
 
-  test-build-scan:
+  test:
 
-    name: Test, Build & Scan for CVEs
+    name: Test
     runs-on: ubuntu-latest
     permissions:
       checks: write
-      pull-requests: write
-      packages: write
-      security-events: write
 
     steps:
 
@@ -50,51 +47,18 @@ jobs:
         with:
           files: "**/TEST-*.xml"
 
-      - name: Setup Docker BuildX
-        uses: docker/setup-buildx-action@v2
+  build-scan-push:
 
-      - name: Login to GitHub CR
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+    name: Build, scan & push Dockerfile
+    needs: test
+    permissions:
+      checks: write
+      pull-requests: write
+      packages: write
+      security-events: write
 
-      - name: Extract Docker metadata
-        id: metadata
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=raw,value=PR-{{date 'YYYYMMDD'}}-{{sha}}
+    uses: gitops-poc/workflows/.github/workflows/build-scan-push.yml@master
+    with:
+      image_tags: |
+        type=raw,value=PR-{{date 'YYYYMMDD'}}-{{sha}}
 
-      - name: Build & Push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-
-      - name: Install Trivy
-        run: |
-          VERSION=0.30.4
-          curl -sSL -o ./trivy.tar.gz https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz
-          tar -xvf trivy.tar.gz
-          mv trivy /usr/local/bin/trivy
-
-      - name: Generate Trivy sarif report for fixable CVEs
-        run: |
-          trivy image ${{ steps.metadata.outputs.tags }} --ignore-unfixed --format sarif --vuln-type os,library --severity HIGH,CRITICAL --output trivy-results.sarif
-
-      - name: Upload Trivy sarif report
-        if: success() || failure()
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-      - name: Full scan with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ steps.metadata.outputs.tags }}
-          exit-code: 0
