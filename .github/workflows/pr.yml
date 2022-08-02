@@ -25,7 +25,7 @@ jobs:
 
   test:
 
-    uses:  gitops-poc/workflows/.github/workflows/gradle-tests.yml@master
+    uses: gitops-poc/workflows/.github/workflows/gradle-tests.yml@master
 
   build-scan-push:
 
