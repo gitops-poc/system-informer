@@ -25,28 +25,7 @@ jobs:
 
   test:
 
-    name: Test
-    runs-on: ubuntu-latest
-    permissions:
-      checks: write
-      pull-requests: write
-
-    steps:
-
-      # Git Checkout
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Gradle Unit Tests
-        run: ./gradlew test
-
-      # Publishes the test results
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        # Runs even if the tests fail
-        if: always()
-        with:
-          files: "**/TEST-*.xml"
+    uses:  gitops-poc/workflows/.github/workflows/gradle-tests.yml@master
 
   build-scan-push:
 
