@@ -1,0 +1,63 @@
+---
+name: System-Informer PR
+
+on: # yamllint disable-line rule:truthy
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - master
+
+jobs:
+
+  codeql:
+
+    uses: gitops-poc/workflows/.github/workflows/code-analysis.yml@master
+
+  mega-linter:
+
+    uses: gitops-poc/workflows/.github/workflows/mega-linter.yml@master
+    with:
+      apply_fixes: "all"
+
+  test:
+
+    name: Test
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+
+    steps:
+
+      # Git Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Gradle Unit Tests
+        run: ./gradlew test
+
+      # Publishes the test results
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        # Runs even if the tests fail
+        if: always()
+        with:
+          files: "**/TEST-*.xml"
+
+  build-scan-push:
+
+    needs: test
+    permissions:
+      checks: write
+      pull-requests: write
+      packages: write
+      security-events: write
+
+    uses: gitops-poc/workflows/.github/workflows/build-scan-push.yml@master
+    with:
+      image_tags: |
+        type=raw,value=PR-{{date 'YYYYMMDD'}}-{{sha}}
