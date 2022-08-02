@@ -12,8 +12,8 @@ on:
       - master
 
 jobs:
-  deploy-dev:
-    name: Deploy in the dev environment
+  update-manifests-dev:
+    name: Update dev manifests
     environment: dev
     runs-on: ubuntu-latest
     env:
@@ -44,6 +44,7 @@ jobs:
         id: commit_push_sandbox
         shell: bash
         run: |
+          set -e
           git config user.name github-actions
           git config user.email github-actions@github.com
           if [[ $(git ls-files . -m --exclude-standard -v | wc -c) -ne 0 ]]; then
@@ -56,6 +57,14 @@ jobs:
       - name: Echo previous step output
         run: |
           echo ${{steps.commit_push_sandbox.outputs.sandbox-commit}}
+  sync-dev:
+    name: Update dev manifests
+    needs: update-manifests-dev
+    environment: dev
+    runs-on: ubuntu-latest
+    env:
+      ARGO_DIR: argo
+    steps:
       - name: Install argocd cli
         run: |
           VERSION=v2.4.7
@@ -98,13 +107,20 @@ jobs:
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
           argocd app get systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web -o json | jq -r .status.health.status | xargs test "Healthy" =
+  smoke-dev:
+    name: Run smoke tests in dev
+    needs: sync-dev
+    environment: dev
+    runs-on: ubuntu-latest
+    steps:
       - name: Run smoke tests
         run: |
           echo "imagine we are running smoke tests"
 
-  deploy-test:
+
+  update-manifests-test:
     name: Deploy in the test environment
-    needs: deploy-dev
+    needs: smoke-dev
     runs-on: ubuntu-latest
     environment: test
     env:
