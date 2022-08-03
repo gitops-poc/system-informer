@@ -42,7 +42,7 @@ jobs:
 
       # Publishes the test results
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         # Runs even if the tests fail
         if: always()
         with:
