@@ -75,14 +75,14 @@ jobs:
       - name: Sync argocd app
         # TODO: switch SANDBOX_IWLS_TOKEN to an environment secret
         env:
-          ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
+          ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
           argocd app sync systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web --async
         continue-on-error: true
       - name: Wait for sync to be done
         env:
-          ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
+          ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
           argocd app wait systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --sync --grpc-web
