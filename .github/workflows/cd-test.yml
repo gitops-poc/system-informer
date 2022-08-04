@@ -23,20 +23,20 @@ jobs:
     steps:
       - name: Add argo repo ssh key
         run: |
-          mkdir $HOME/.ssh/
-          ls -la $HOME
-          echo "$SSH_KEY" > $HOME/.ssh/id_rsa
-          chmod 600 $HOME/.ssh/id_rsa
+          mkdir "$HOME/.ssh/"
+          ls -la "$HOME"
+          echo "$SSH_KEY" > "$HOME/.ssh/id_rsa"
+          chmod 600 "$HOME/.ssh/id_rsa"
         shell: bash
         env:
           SSH_KEY: ${{secrets.ARGO_SSH_KEY}}
       - name: Clone argo repo
         run: |
-          git clone git@github.com:gitops-poc/argo.git $ARGO_DIR
+          git clone git@github.com:gitops-poc/argo.git "$ARGO_DIR"
       - name: Update dev image
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:test"' $ARGO_DIR/system-informer/overlays/dev/deployment.yaml
+          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:test"' "$ARGO_DIR/system-informer/overlays/dev/deployment.yaml"
       - name: Output yaml to be applied
         working-directory: ${{ env.ARGO_DIR }}
         run: |
@@ -78,32 +78,32 @@ jobs:
           ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
-          argocd app sync systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web --async
+          argocd app sync systeminformer --auth-token "$ACCESS_TOKEN" --server "$ARGOCD_SERVER" --grpc-web --async
         continue-on-error: true
       - name: Wait for sync to be done
         env:
           ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
-          argocd app wait systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --sync --grpc-web
+          argocd app wait systeminformer --auth-token "$ACCESS_TOKEN" --server "$ARGOCD_SERVER" --sync --grpc-web
       - name: Check current revision
         env:
           ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
-          argocd app get systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web -o json | jq -r .status.sync.revision | xargs test ${{needs.update-manifests-dev.outputs.sandbox-commit}} =
+          argocd app get systeminformer --auth-token "$ACCESS_TOKEN" --server "$ARGOCD_SERVER" --grpc-web -o json | jq -r .status.sync.revision | xargs test ${{needs.update-manifests-dev.outputs.sandbox-commit}} =
       - name: Check sync status
         env:
           ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
-          argocd app get systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web -o json | jq -r .status.sync.status | xargs test "Synced" =
+          argocd app get systeminformer --auth-token "$ACCESS_TOKEN" --server "$ARGOCD_SERVER" --grpc-web -o json | jq -r .status.sync.status | xargs test "Synced" =
       - name: Check health status
         env:
           ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
-          argocd app get systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web -o json | jq -r .status.health.status | xargs test "Healthy" =
+          argocd app get systeminformer --auth-token "$ACCESS_TOKEN" --server "$ARGOCD_SERVER" --grpc-web -o json | jq -r .status.health.status | xargs test "Healthy" =
   smoke-dev:
     name: Run smoke tests in dev
     needs: sync-dev
@@ -124,20 +124,20 @@ jobs:
     steps:
       - name: Add argo repo ssh key
         run: |
-          mkdir $HOME/.ssh/
-          ls -la $HOME
-          echo "$SSH_KEY" > $HOME/.ssh/id_rsa
-          chmod 600 $HOME/.ssh/id_rsa
+          mkdir "$HOME/.ssh/"
+          ls -la "$HOME"
+          echo "$SSH_KEY" > "$HOME/.ssh/id_rsa"
+          chmod 600 "$HOME/.ssh/id_rsa"
         shell: bash
         env:
           SSH_KEY: ${{secrets.ARGO_SSH_KEY}}
       - name: Clone argo repo
         run: |
-          git clone git@github.com:gitops-poc/argo.git $ARGO_DIR
+          git clone git@github.com:gitops-poc/argo.git "$ARGO_DIR"
       - name: Update test image
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:test"' $ARGO_DIR/system-informer/overlays/test/deployment.yaml
+          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:test"' "$ARGO_DIR/system-informer/overlays/test/deployment.yaml"
       - name: Output yaml to be applied
         working-directory: ${{ env.ARGO_DIR }}
         env:
