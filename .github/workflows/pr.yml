@@ -12,23 +12,18 @@ on: # yamllint disable-line rule:truthy
       - master
 
 jobs:
-
   codeql:
-
     uses: gitops-poc/workflows/.github/workflows/code-analysis.yml@master
 
   mega-linter:
-
     uses: gitops-poc/workflows/.github/workflows/mega-linter.yml@master
     with:
-      apply_fixes: "all"
+      apply_fixes: 'all'
 
   test:
-
     uses: gitops-poc/workflows/.github/workflows/gradle-tests.yml@master
 
   build-scan-push:
-
     needs: test
     permissions:
       checks: write
