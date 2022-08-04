@@ -16,6 +16,8 @@ jobs:
     name: Update dev manifests
     environment: dev
     runs-on: ubuntu-latest
+    outputs:
+      sandbox-commit: ${{ steps.commit_push_sandbox.outputs.sandbox-commit }}
     env:
       ARGO_DIR: argo
     steps:
@@ -89,7 +91,7 @@ jobs:
           ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
-          argocd app get systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web -o json | jq -r .status.sync.revision | xargs test ${{steps.commit_push_sandbox.outputs.sandbox-commit}} =
+          argocd app get systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web -o json | jq -r .status.sync.revision | xargs test ${{steps.update-manifests-dev.outputs.sandbox-commit}} =
       - name: Check sync status
         env:
           ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
