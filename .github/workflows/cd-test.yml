@@ -88,19 +88,19 @@ jobs:
           argocd app wait systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --sync --grpc-web
       - name: Check current revision
         env:
-          ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
+          ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
           argocd app get systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web -o json | jq -r .status.sync.revision | xargs test ${{needs.update-manifests-dev.outputs.sandbox-commit}} =
       - name: Check sync status
         env:
-          ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
+          ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
           argocd app get systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web -o json | jq -r .status.sync.status | xargs test "Synced" =
       - name: Check health status
         env:
-          ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
+          ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
           argocd app get systeminformer --auth-token $ACCESS_TOKEN --server $ARGOCD_SERVER --grpc-web -o json | jq -r .status.health.status | xargs test "Healthy" =
@@ -113,7 +113,6 @@ jobs:
       - name: Run smoke tests
         run: |
           echo "imagine we are running smoke tests"
-
 
   update-manifests-test:
     name: Deploy in the test environment
@@ -142,7 +141,7 @@ jobs:
       - name: Output yaml to be applied
         working-directory: ${{ env.ARGO_DIR }}
         env:
-          ACCESS_TOKEN:  ${{secrets.SANDBOX_IWLS_TOKEN}}
+          ACCESS_TOKEN: ${{secrets.SANDBOX_IWLS_TOKEN}}
           ARGOCD_SERVER: nginx.sandbox.azure.cloud-nuage.dfo-mpo.gc.ca
         run: |
           kustomize build system-informer/overlays/test
@@ -225,5 +224,5 @@ jobs:
       # - name: Update prod image
       # - name: Commit and push changes to branch
       # - name: Create PR for prod image
-        # What happens if we want to execute tests in prod?
-        # What happens if we want to have a PR in Test? Do we put the pipeline in some kind of waiting? Use environment approvals again?
+      # What happens if we want to execute tests in prod?
+      # What happens if we want to have a PR in Test? Do we put the pipeline in some kind of waiting? Use environment approvals again?
