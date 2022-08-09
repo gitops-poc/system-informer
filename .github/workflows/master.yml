@@ -4,7 +4,7 @@ name: System-Informer master
 on: # yamllint disable-line rule:truthy
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
