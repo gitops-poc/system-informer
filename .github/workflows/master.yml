@@ -51,7 +51,7 @@ jobs:
       - name: Update dev image
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:${{sha}}"' "$ARGO_DIR/system-informer/overlays/dev/deployment.yaml"
+          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:${{ github.sha }}"' "$ARGO_DIR/system-informer/overlays/dev/deployment.yaml"
       - name: Output yaml to be applied
         working-directory: ${{ env.ARGO_DIR }}
         run: |
@@ -154,7 +154,7 @@ jobs:
       - name: Update test image
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:{{sha}}"' "$ARGO_DIR/system-informer/overlays/test/deployment.yaml"
+          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/systeminformer:{{ github.sha }}"' "$ARGO_DIR/system-informer/overlays/test/deployment.yaml"
       - name: Output yaml to be applied
         working-directory: ${{ env.ARGO_DIR }}
         env:
