@@ -51,7 +51,7 @@ jobs:
       - name: Update dev image
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/system-informer:${{ github.sha }}"' "$ARGO_DIR/system-informer/overlays/dev/deployment.yaml"
+          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/system-informer@sha256:${{ needs.build-scan-push.outputs.image-digest }}"' "$ARGO_DIR/system-informer/overlays/dev/deployment.yaml"
       - name: Output yaml to be applied
         working-directory: ${{ env.ARGO_DIR }}
         run: |
@@ -77,7 +77,7 @@ jobs:
 
   sync-dev:
     name: Sync dev changes
-    needs: update-manifests-dev
+    needs: [update-manifests-dev]
     environment: dev
     runs-on: ubuntu-latest
     env:
@@ -133,7 +133,7 @@ jobs:
 
   update-manifests-test:
     name: Deploy in the test environment
-    needs: smoke-dev
+    needs: [smoke-dev, build-scan-push]
     runs-on: ubuntu-latest
     environment: test
     env:
@@ -154,7 +154,7 @@ jobs:
       - name: Update test image
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/system-informer:{{ github.sha }}"' "$ARGO_DIR/system-informer/overlays/test/deployment.yaml"
+          cmd: yq -i '.spec.template.spec.containers.[0].image="ghcr.io/gitops-poc/system-informer@sha256:${{ needs.build-scan-push.outputs.image-digest }}"' "$ARGO_DIR/system-informer/overlays/test/deployment.yaml"
       - name: Output yaml to be applied
         working-directory: ${{ env.ARGO_DIR }}
         env:
