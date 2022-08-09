@@ -10,7 +10,7 @@ public final class SystemInformerRestController {
 
   @RequestMapping("/info")
   public InformationDto getInfo() throws Exception {
-    System.out.println("other");
+    System.out.println("again");
     InformationDto dto = new InformationDto();
     dto.setHostname(InetAddress.getLocalHost().getHostName());
     dto.setIpAddress(InetAddress.getLocalHost().getHostAddress());
