@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import javax.sql.DataSource;
 
 @RestController
-
 public class SystemInformerRestController {
     private final String DATE_FORMAT = "yyyy/MM/dd HH:mm";
     @Autowired
@@ -39,4 +38,5 @@ public class SystemInformerRestController {
       return rs.getString(0);
     // ...
     }
+
 }
