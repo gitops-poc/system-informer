@@ -5,7 +5,7 @@ RUN ./gradlew test
 # hadolint ignore=DL3059
 RUN ./gradlew unpack
 
-FROM gcr.io/distroless/java11-debian11:nonroot@sha256:7c9506a8ef3e916d5391fe8ae95b6f215067a938e0bdfca7986d1fc03bc340dd
+FROM gcr.io/distroless/java11-debian11:nonroot@sha256:91a83a819ae1aba23fdfe43971a342d3ec55adf46e9de625e059b2fe837c8a61
 LABEL org.opencontainers.image.source="https://github.com/gitops-poc/systeminformer"
 LABEL org.opencontainers.image.description="Java proof of concept project for gitops"
 LABEL maintainer="alexandre.bd@tutanota.com"
