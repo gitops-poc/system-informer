@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-slim-bullseye AS build
+FROM openjdk:17.0.2-jdk-slim-bullseye AS build
 COPY . /app
 WORKDIR /app
 RUN ./gradlew test
